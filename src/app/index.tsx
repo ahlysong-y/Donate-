@@ -47,7 +47,7 @@ const QUICK_CHEERS = [
 ];
 
 const BANK_DETAILS = {
-  bankAccName: 'Bun Song',
+  bankAccName: 'AHLYSONG',
   bankAccNum: 'ACLEDA KHQR',
   bankName: 'ACLEDA Bank / Bakong KHQR',
 };
@@ -67,8 +67,8 @@ const SOCIAL_LINKS: SocialLink[] = [
   {
     id: 'facebook',
     name: 'Facebook',
-    handle: 'Bun Song',
-    url: 'https://facebook.com',
+    handle: 'SOENG Bun Song',
+    url: 'https://www.facebook.com/share/1B3mWHPucD/',
     color: '#1877f2',
     bgColor: '#f0f6ff',
     borderColor: '#cce0ff',
@@ -78,7 +78,7 @@ const SOCIAL_LINKS: SocialLink[] = [
     id: 'telegram',
     name: 'Telegram',
     handle: 'Channel',
-    url: 'https://t.me',
+    url: 'https://t.me/+oSDwct4_FtA0YTll',
     color: '#229ed9',
     bgColor: '#f0f9ff',
     borderColor: '#bfe7fc',
@@ -88,7 +88,7 @@ const SOCIAL_LINKS: SocialLink[] = [
     id: 'discord',
     name: 'Discord',
     handle: 'Community',
-    url: 'https://discord.gg',
+    url: 'https://discord.gg/BVJRfz6zc',
     color: '#5865f2',
     bgColor: '#f3f4fe',
     borderColor: '#d5d7fc',
@@ -611,17 +611,14 @@ export default function DonationScreen() {
             <View style={styles.profileCenterBox}>
               <View style={styles.streamerAvatarWrap}>
                 <Image
-                  source={require('../../assets/images/streamer-avatar.jpg')}
+                  source={require('../../assets/profile/1.png')}
                   style={styles.streamerAvatarImg}
                   resizeMode="cover"
                 />
-                <View style={styles.streamerLiveDot}>
-                  <Ionicons name="radio" size={10} color="#ffffff" />
-                </View>
               </View>
 
               <View style={styles.streamerNameRow}>
-                <Text style={styles.streamerName}>Bun Song</Text>
+                <Text style={styles.streamerName}>AHLYSUNG</Text>
                 <Ionicons name="checkmark-circle" size={19} color="#00b4d8" style={{ marginLeft: 5 }} />
               </View>
             </View>
@@ -707,19 +704,6 @@ export default function DonationScreen() {
             />
           </View>
           {amountError ? <Text style={styles.errorText}>{amountError}</Text> : null}
-
-          {/* DYNAMIC IMPACT CALLOUT */}
-          <View style={styles.impactCard}>
-            <Ionicons name="sparkles" size={17} color="#ff7a59" style={{ marginTop: 2 }} />
-            <Text style={styles.impactText}>{getImpactMessage()}</Text>
-            <TouchableOpacity
-              style={styles.impactTtsBtn}
-              activeOpacity={0.7}
-              onPress={() => speakText(getImpactMessage())}
-            >
-              <Ionicons name="volume-medium-outline" size={14} color="#a8472a" />
-            </TouchableOpacity>
-          </View>
 
           {/* DONOR DETAILS */}
           <View style={styles.fieldHeaderRow}>
@@ -1319,10 +1303,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   streamerAvatarImg: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    borderWidth: 3,
+    width: 120,
+    height: 120,
+    borderRadius: 100,
     borderColor: '#ffffff',
     backgroundColor: '#0d3b66',
     shadowColor: '#0d1b1a',
