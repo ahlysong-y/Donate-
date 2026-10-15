@@ -66,8 +66,8 @@ interface SocialLink {
 const SOCIAL_LINKS: SocialLink[] = [
   {
     id: 'facebook',
-    name: 'Facebook',
-    handle: 'SOENG Bun Song',
+    name: 'SOENG Bun Song',
+    handle: 'Facebook',
     url: 'https://www.facebook.com/share/1B3mWHPucD/',
     color: '#1877f2',
     bgColor: '#f0f6ff',
@@ -76,7 +76,7 @@ const SOCIAL_LINKS: SocialLink[] = [
   },
   {
     id: 'telegram',
-    name: 'Telegram',
+    name: 'AHLYSONG',
     handle: 'Channel',
     url: 'https://t.me/+oSDwct4_FtA0YTll',
     color: '#229ed9',
@@ -86,7 +86,7 @@ const SOCIAL_LINKS: SocialLink[] = [
   },
   {
     id: 'discord',
-    name: 'Discord',
+    name: 'ahlysung',
     handle: 'Community',
     url: 'https://discord.gg/BVJRfz6zc',
     color: '#5865f2',
@@ -752,12 +752,12 @@ export default function DonationScreen() {
           {/* YOUTUBE LINK */}
           <View style={styles.fieldHeaderRow}>
             <Text style={styles.fieldLabel}>
-              YOUTUBE SONG / VIDEO
+              YOUTUBE Media Link
             </Text>
           </View>
           <TextInput
             style={[styles.textInput, youtubeError ? styles.inputErrorBorder : null]}
-            placeholder="https://www.youtube.com/watch?v=... "
+            placeholder="Link YouTube"
             placeholderTextColor="#9aa9a7"
             autoCapitalize="none"
             value={youtubeUrl}
@@ -881,18 +881,6 @@ export default function DonationScreen() {
               </TouchableOpacity>
             </View>
 
-          </View>
-
-          {/* AUTO-DETECTION STATUS BADGE */}
-          <View style={[styles.autoDetectBox, isAutoDetecting && styles.autoDetectBoxActive]}>
-            <View style={styles.pulseDotWrap}>
-              <View style={[styles.pulseDot, isAutoDetecting && styles.pulseDotActive]} />
-            </View>
-            <Text style={[styles.autoDetectText, isAutoDetecting && styles.autoDetectTextActive]}>
-              {isAutoDetecting
-                ? '⚡ បានរកឃើញការបាញ់លុយ! កំពុងលោត Alert ស្វ័យប្រវត្តិ...'
-                : '⚡ Auto-Detect: ពេលផ្ទេររួចត្រឡប់មកវិញ នឹង Auto លោត Alert ភ្លាម'}
-            </Text>
           </View>
 
           {/* SUBMIT BUTTON */}
