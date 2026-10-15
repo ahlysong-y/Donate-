@@ -909,12 +909,6 @@ export default function DonationScreen() {
               </Text>
             </View>
           </TouchableOpacity>
-
-          {/* SECURITY ASSURANCE */}
-          <View style={styles.secureRow}>
-            <Ionicons name="flash" size={13} color="#14746f" />
-            <Text style={styles.secureText}>100% Instant Alert · Live Khmer Voice TTS</Text>
-          </View>
         </View>
 
         {/* RECENT ON-STREAM CHEERS */}
