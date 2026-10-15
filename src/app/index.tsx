@@ -292,21 +292,51 @@ export default function DonationScreen() {
       )}&tl=km&client=tw-ob`;
 
       if (Platform.OS === 'web' && typeof window !== 'undefined' && (window as any).Audio) {
-        const audio = new (window as any).Audio(audioUrl);
-        webAudioRef.current = audio;
+        // Priority 1: /api/tts serverless proxy (solves Google referer blocking on Vercel)
+        // Priority 2: direct Google Translate TTS URL
+        // Priority 3: Speech.speak fallback
+        const apiUrl = `/api/tts?text=${encodeURIComponent(text.trim())}`;
+        const directUrl = audioUrl;
 
-        // Ching Chang (Shin-chan) voice effect: increase rate & shift pitch
-        if (isChing) {
-          audio.playbackRate = 1.25;
-          (audio as any).preservesPitch = false;
-        }
+        const playAudioWithUrl = (srcUrl: string, onFail: () => void) => {
+          try {
+            const audio = new (window as any).Audio();
+            try {
+              audio.referrerPolicy = 'no-referrer';
+            } catch (e) { }
+            audio.src = srcUrl;
+            webAudioRef.current = audio;
 
-        audio.onended = () => {
-          webAudioRef.current = null;
-          finish();
+            if (isChing) {
+              audio.playbackRate = 1.25;
+              (audio as any).preservesPitch = false;
+            }
+
+            audio.onended = () => {
+              webAudioRef.current = null;
+              finish();
+            };
+
+            audio.onerror = (err: any) => {
+              console.warn(`TTS audio error for ${srcUrl}:`, err);
+              webAudioRef.current = null;
+              onFail();
+            };
+
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+              playPromise.catch((err: any) => {
+                console.warn(`Audio.play() rejected for ${srcUrl}:`, err);
+                webAudioRef.current = null;
+                onFail();
+              });
+            }
+          } catch (e) {
+            onFail();
+          }
         };
-        audio.onerror = () => {
-          webAudioRef.current = null;
+
+        const fallbackToSpeech = () => {
           Speech.speak(text, {
             language: 'km-KH',
             pitch: isChing ? 1.55 : 1.0,
@@ -315,7 +345,10 @@ export default function DonationScreen() {
             onError: finish,
           });
         };
-        await audio.play();
+
+        playAudioWithUrl(apiUrl, () => {
+          playAudioWithUrl(directUrl, fallbackToSpeech);
+        });
         return;
       }
 
