@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GiveHope — Donate Today</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --brand:#14746f; --brand-600:#0f5f5b; --brand-50:#e8f4f3;
+    --accent:#ff7a59; --accent-600:#f2603c;
+    --ink:#0d1b1a; --muted:#5d6f6d; --line:#e2eae9;
+    --bg:#f6faf9; --card:#ffffff; --radius:18px;
+    --shadow-sm:0 2px 8px rgba(13,27,26,.06);
+    --shadow:0 14px 40px rgba(13,27,26,.10);
+    --shadow-lg:0 30px 70px rgba(13,27,26,.16);
+  }
+  html{scroll-behavior:smooth}
+  body{font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  img,svg{display:block;max-width:100%}
+  button,input,select,textarea{font:inherit;color:inherit}
+  button{cursor:pointer;border:none;background:none}
+  a{color:inherit;text-decoration:none}
+  .wrap{width:min(1180px,100% - 40px);margin-inline:auto}
+
+  .nav{position:sticky;top:0;z-index:60;backdrop-filter:blur(14px);background:rgba(246,250,249,.82);border-bottom:1px solid transparent;transition:border-color .3s,box-shadow .3s}
+  .nav.scrolled{border-bottom-color:var(--line);box-shadow:0 4px 20px rgba(13,27,26,.05)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:74px;gap:24px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem;letter-spacing:-.02em}
+  .logo-mark{width:36px;height:36px;border-radius:11px;background:linear-gradient(140deg,var(--brand),#2aa79d);display:grid;place-items:center;color:#fff;box-shadow:0 6px 16px rgba(20,116,111,.32)}
+  .nav-links{display:flex;gap:32px;font-size:.92rem;font-weight:500;color:var(--muted)}
+  .nav-links a{transition:color .2s}
+  .nav-links a:hover{color:var(--brand)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;font-weight:700;font-size:.94rem;padding:12px 24px;transition:transform .18s,box-shadow .18s,background .18s;white-space:nowrap}
+  .btn:active{transform:scale(.97)}
+  .btn-primary{background:linear-gradient(140deg,var(--accent),var(--accent-600));color:#fff;box-shadow:0 10px 24px rgba(255,122,89,.34)}
+  .btn-primary:hover{box-shadow:0 14px 32px rgba(255,122,89,.44);transform:translateY(-1px)}
+  .btn-ghost{background:var(--brand-50);color:var(--brand-600)}
+  .btn-ghost:hover{background:#d9edeb}
+
+  .hero{position:relative;padding:64px 0 90px}
+  .hero::before{content:"";position:absolute;inset:-180px -10% auto -10%;height:640px;z-index:-1;background:radial-gradient(520px 340px at 12% 8%,rgba(20,116,111,.13),transparent 70%),radial-gradient(560px 380px at 88% 0%,rgba(255,122,89,.15),transparent 70%)}
+  .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:start}
+  .pill{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 15px 7px 9px;font-size:.8rem;font-weight:600;color:var(--muted);box-shadow:var(--shadow-sm)}
+  .pill .dot{width:20px;height:20px;border-radius:50%;background:var(--brand-50);display:grid;place-items:center;color:var(--brand)}
+  h1{font-size:clamp(2.3rem,4.6vw,3.6rem);line-height:1.08;letter-spacing:-.035em;font-weight:800;margin:22px 0 18px}
+  h1 em{font-style:normal;background:linear-gradient(100deg,var(--brand),#31b3a6);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{font-size:1.06rem;color:var(--muted);max-width:30rem}
+
+  .progress-card{margin-top:36px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow-sm)}
+  .progress-top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:14px}
+  .raised{font-size:1.9rem;font-weight:800;letter-spacing:-.03em;line-height:1}
+  .raised small{display:block;font-size:.78rem;font-weight:600;color:var(--muted);letter-spacing:.02em;text-transform:uppercase;margin-bottom:6px}
+  .goal{font-size:.86rem;color:var(--muted);text-align:right}
+  .goal b{color:var(--ink)}
+  .track{height:12px;border-radius:99px;background:#eef4f3;overflow:hidden;position:relative}
+  .fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--brand),#38bfb1);transition:width 1.6s cubic-bezier(.22,1,.36,1);position:relative}
+  .fill::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);animation:shine 2.6s infinite}
+  @keyframes shine{0%{transform:translateX(-100%)}60%,100%{transform:translateX(100%)}}
+  .progress-meta{display:flex;justify-content:space-between;font-size:.82rem;color:var(--muted);margin-top:12px}
+  .trust{display:flex;align-items:center;gap:14px;margin-top:26px}
+  .avatars{display:flex}
+  .avatars span{width:34px;height:34px;border-radius:50%;border:3px solid var(--bg);margin-left:-11px;display:grid;place-items:center;font-size:.72rem;font-weight:700;color:#fff}
+  .avatars span:first-child{margin-left:0}
+  .trust p{font-size:.85rem;color:var(--muted)}
+  .trust b{color:var(--ink)}
+
+  .donate-card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:30px;box-shadow:var(--shadow);position:sticky;top:96px}
+  .donate-card h2{font-size:1.28rem;letter-spacing:-.02em;font-weight:800}
+  .donate-card .sub{font-size:.86rem;color:var(--muted);margin-top:4px}
+  .field-label{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:22px 0 10px}
+  .field-label .opt{font-size:.68rem;font-weight:600;color:#9aa9a7;text-transform:none;letter-spacing:0}
+
+  .tts-btn{display:inline-flex;align-items:center;gap:5px;background:var(--brand-50);color:var(--brand-600);border-radius:99px;padding:5px 10px;font-size:.68rem;font-weight:800;letter-spacing:.02em;text-transform:none;transition:background .18s,color .18s,transform .18s;flex:none}
+  .tts-btn:hover{background:#d9edeb}
+  .tts-btn:active{transform:scale(.95)}
+  .tts-btn.speaking{background:var(--accent);color:#fff}
+  .tts-btn .ic-stop{display:none}
+  .tts-btn.speaking .ic-play{display:none}
+  .tts-btn.speaking .ic-stop{display:block}
+
+  .freq{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#eff5f4;border-radius:999px;padding:4px;position:relative}
+  .freq button{padding:10px;border-radius:999px;font-size:.88rem;font-weight:700;color:var(--muted);transition:color .2s;position:relative;z-index:1}
+  .freq button.active{color:#fff}
+  .freq-thumb{position:absolute;top:4px;left:4px;width:calc(50% - 4px);height:calc(100% - 8px);background:linear-gradient(140deg,var(--brand),#1d938a);border-radius:999px;transition:transform .32s cubic-bezier(.4,1.4,.5,1);box-shadow:0 6px 16px rgba(20,116,111,.3)}
+  .freq[data-mode="monthly"] .freq-thumb{transform:translateX(100%)}
+  .save-badge{font-size:.62rem;background:var(--accent);color:#fff;border-radius:99px;padding:2px 7px;margin-left:5px;font-weight:700;vertical-align:middle}
+
+  .amounts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .amt{border:1.6px solid var(--line);border-radius:14px;padding:14px 8px;font-weight:700;font-size:1rem;background:#fff;transition:border-color .18s,background .18s,transform .18s,box-shadow .18s}
+  .amt:hover{border-color:#bcd8d5}
+  .amt.active{border-color:var(--brand);background:var(--brand-50);color:var(--brand-600);box-shadow:0 0 0 3px rgba(20,116,111,.12)}
+  .amt small{display:block;font-size:.66rem;font-weight:600;color:var(--muted);margin-top:2px}
+  .amt.active small{color:var(--brand)}
+
+  .custom-wrap{position:relative;margin-top:10px}
+  .custom-wrap .cur{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-weight:700;color:var(--muted);font-size:1rem;pointer-events:none}
+  .custom-wrap input{width:100%;padding:14px 16px 14px 34px;border:1.6px solid var(--line);border-radius:14px;background:#fff;font-weight:700;outline:none;transition:border-color .18s,box-shadow .18s}
+  .custom-wrap input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(20,116,111,.12)}
+  .custom-wrap input.invalid{border-color:#e5484d;box-shadow:0 0 0 3px rgba(229,72,77,.12)}
+
+  .impact{margin-top:14px;display:flex;gap:11px;align-items:flex-start;background:linear-gradient(120deg,#fff6f2,#fffaf7);border:1px solid #ffe2d6;border-radius:14px;padding:13px 15px}
+  .impact > svg{flex:none;margin-top:3px}
+  .impact p{font-size:.85rem;color:#8a4a33;font-weight:600;line-height:1.45;flex:1}
+  .impact .tts-btn{background:#ffe2d6;color:#a8472a;margin-top:1px}
+  .impact .tts-btn:hover{background:#ffd3c1}
+  .impact .tts-btn.speaking{background:var(--accent);color:#fff}
+
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .input{width:100%;padding:13px 15px;border:1.6px solid var(--line);border-radius:13px;background:#fff;outline:none;font-size:.92rem;transition:border-color .18s,box-shadow .18s}
+  textarea.input{resize:vertical;min-height:86px;line-height:1.5;font-weight:500;font-family:inherit}
+  .input::placeholder{color:#9aa9a7}
+  .input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(20,116,111,.12)}
+  .input.invalid{border-color:#e5484d;box-shadow:0 0 0 3px rgba(229,72,77,.12)}
+  .err{font-size:.75rem;color:#d93a3f;font-weight:600;margin-top:6px;display:none}
+  .err.show{display:block}
+  .char-count{font-size:.72rem;color:var(--muted);text-align:right;margin-top:5px;font-weight:600}
+
+  .yt-preview{margin-top:10px;border-radius:14px;overflow:hidden;display:none;aspect-ratio:16/9;border:1px solid var(--line);background:#000}
+  .yt-preview.show{display:block;animation:fade .3s ease}
+  .yt-preview iframe{width:100%;height:100%;border:0;display:block}
+
+  .pay-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+  .pay{border:1.6px solid var(--line);border-radius:13px;padding:11px 6px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:.7rem;font-weight:700;color:var(--muted);background:#fff;transition:border-color .18s,background .18s,color .18s}
+  .pay svg{opacity:.65;transition:opacity .18s}
+  .pay:hover{border-color:#bcd8d5}
+  .pay.active{border-color:var(--brand);background:var(--brand-50);color:var(--brand-600)}
+  .pay.active svg{opacity:1}
+
+  .card-fields{margin-top:12px;display:none}
+  .card-fields.show{display:block;animation:fade .3s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+
+  .bank-fields{margin-top:12px;display:none}
+  .bank-fields.show{display:block;animation:fade .3s ease}
+  .bank-card{background:linear-gradient(140deg,#f2f9f8,#f9fdfc);border:1px solid #d5e8e6;border-radius:16px;padding:16px 18px}
+  .bank-head{display:flex;align-items:center;gap:8px;font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--brand);margin-bottom:12px}
+  .bank-row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed #d5e8e6}
+  .bank-row:last-child{border-bottom:none;padding-bottom:0}
+  .bank-row:first-of-type{padding-top:0}
+  .bank-key{font-size:.8rem;color:var(--muted);flex:none;padding-top:2px}
+  .bank-key em{font-style:normal;font-size:.68rem;color:#9aa9a7;display:block}
+  .bank-val{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;text-align:right}
+  .bank-val b{font-size:.88rem;letter-spacing:-.01em;word-break:break-word}
+  .copy-btn{font-size:.66rem;font-weight:800;color:var(--brand);background:var(--brand-50);border-radius:99px;padding:4px 10px;transition:background .18s,color .18s;flex:none}
+  .copy-btn:hover{background:#d9edeb}
+  .copy-btn.copied{background:var(--brand);color:#fff}
+  .bank-note{margin-top:12px;font-size:.76rem;color:var(--muted);background:#fff;border-radius:11px;padding:10px 12px;border:1px dashed #d5e8e6;line-height:1.5}
+  .bank-note b{color:var(--ink)}
+
+  .submit{width:100%;margin-top:24px;padding:17px;border-radius:15px;background:linear-gradient(140deg,var(--accent),var(--accent-600));color:#fff;font-weight:800;font-size:1.02rem;letter-spacing:-.01em;box-shadow:0 14px 30px rgba(255,122,89,.34);transition:transform .18s,box-shadow .18s,filter .18s}
+  .submit:hover{transform:translateY(-2px);box-shadow:0 18px 38px rgba(255,122,89,.42)}
+  .submit:active{transform:translateY(0) scale(.99)}
+  .submit:disabled{filter:grayscale(.4);opacity:.7;cursor:not-allowed;transform:none}
+
+  .secure{display:flex;align-items:center;justify-content:center;gap:7px;font-size:.76rem;color:var(--muted);margin-top:14px;font-weight:500}
+
+  section{padding:88px 0}
+  .sec-head{text-align:center;max-width:34rem;margin:0 auto 52px}
+  .kicker{font-size:.76rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);margin-bottom:12px}
+  .sec-head h2{font-size:clamp(1.7rem,3vw,2.35rem);letter-spacing:-.03em;line-height:1.15;font-weight:800}
+  .sec-head p{color:var(--muted);margin-top:14px}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:30px;transition:transform .28s,box-shadow .28s,border-color .28s}
+  .card:hover{transform:translateY(-5px);box-shadow:var(--shadow);border-color:#cfe4e2}
+  .card .ico{width:50px;height:50px;border-radius:15px;display:grid;place-items:center;margin-bottom:18px}
+  .card h3{font-size:1.08rem;letter-spacing:-.02em;margin-bottom:8px}
+  .card p{font-size:.9rem;color:var(--muted)}
+  .card .tag{display:inline-block;margin-top:18px;font-size:.78rem;font-weight:800;color:var(--brand);background:var(--brand-50);padding:5px 12px;border-radius:99px}
+
+  .faq-wrap{max-width:760px;margin-inline:auto}
+  details{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:12px;overflow:hidden;transition:border-color .2s,box-shadow .2s}
+  details[open]{border-color:#cfe4e2;box-shadow:var(--shadow-sm)}
+  summary{list-style:none;cursor:pointer;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;font-weight:700;font-size:.98rem;letter-spacing:-.01em}
+  summary::-webkit-details-marker{display:none}
+  .chev{flex:none;width:26px;height:26px;border-radius:50%;background:var(--brand-50);display:grid;place-items:center;transition:transform .3s,background .2s}
+  details[open] .chev{transform:rotate(180deg);background:var(--brand);color:#fff}
+  details p{padding:0 24px 22px;color:var(--muted);font-size:.92rem;max-width:60ch}
+
+  .band{background:linear-gradient(140deg,#0f5f5b,#14746f 45%,#1f9b90);border-radius:28px;padding:60px 44px;text-align:center;color:#fff;position:relative;overflow:hidden}
+  .band::before{content:"";position:absolute;inset:-60% -20% auto auto;width:520px;height:520px;background:radial-gradient(circle,rgba(255,255,255,.14),transparent 65%)}
+  .band h2{font-size:clamp(1.7rem,3vw,2.3rem);letter-spacing:-.03em;position:relative}
+  .band p{opacity:.85;margin:14px auto 30px;max-width:36rem;position:relative}
+  .band .btn{background:#fff;color:var(--brand-600);position:relative;padding:15px 34px}
+  .band .btn:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(0,0,0,.22)}
+
+  footer{border-top:1px solid var(--line);padding:44px 0;margin-top:20px}
+  .foot{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+  .foot p{font-size:.84rem;color:var(--muted)}
+  .foot-links{display:flex;gap:24px;font-size:.84rem;color:var(--muted)}
+  .foot-links a:hover{color:var(--brand)}
+
+  .overlay{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:20px;background:rgba(9,26,24,.55);backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
+  .overlay.show{opacity:1;visibility:visible}
+  .modal{background:#fff;border-radius:26px;padding:44px 38px;text-align:center;width:min(460px,100%);box-shadow:var(--shadow-lg);transform:scale(.9) translateY(14px);transition:transform .38s cubic-bezier(.2,1.3,.4,1);position:relative;overflow:hidden;max-height:92vh;overflow-y:auto}
+  .overlay.show .modal{transform:scale(1) translateY(0)}
+  .check{width:76px;height:76px;border-radius:50%;margin:0 auto 22px;background:linear-gradient(140deg,var(--brand),#2fb3a7);display:grid;place-items:center;color:#fff;box-shadow:0 16px 34px rgba(20,116,111,.34);animation:pop .5s cubic-bezier(.2,1.5,.4,1) .15s both}
+  @keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+  .modal h3{font-size:1.5rem;letter-spacing:-.03em;margin-bottom:10px}
+  .modal > p{color:var(--muted);font-size:.92rem}
+  .receipt{background:var(--bg);border:1px dashed #cfe0de;border-radius:16px;padding:18px;margin:24px 0;text-align:left;font-size:.88rem}
+  .receipt div{display:flex;justify-content:space-between;gap:12px;padding:5px 0}
+  .receipt span{color:var(--muted);flex:none}
+  .receipt b{font-weight:700;text-align:right;max-width:62%;word-break:break-word}
+  .receipt b a{color:var(--brand);text-decoration:underline}
+  .receipt .total{border-top:1px dashed #cfe0de;margin-top:8px;padding-top:12px;font-size:1.02rem}
+  .receipt .total b{color:var(--brand)}
+  .modal-actions{display:flex;gap:10px}
+  .modal-actions .btn{flex:1;padding:14px}
+  .confetti{position:absolute;top:-20px;border-radius:2px;pointer-events:none;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(560px) rotate(720deg);opacity:0}}
+
+  @media (max-width:980px){
+    .hero-grid{grid-template-columns:1fr;gap:44px}
+    .donate-card{position:static}
+    .cards{grid-template-columns:1fr 1fr}
+    .nav-links{display:none}
+  }
+  @media (max-width:640px){
+    .wrap{width:min(1180px,100% - 28px)}
+    section{padding:64px 0}
+    .hero{padding:40px 0 64px}
+    .cards{grid-template-columns:1fr}
+    .donate-card{padding:22px}
+    .pay-grid{grid-template-columns:repeat(2,1fr)}
+    .row{grid-template-columns:1fr}
+    .band{padding:44px 24px;border-radius:22px}
+    .modal{padding:34px 24px}
+    .foot{flex-direction:column;text-align:center}
+    .bank-row{flex-direction:column;gap:6px}
+    .bank-val{justify-content:flex-start;text-align:left}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a href="#" class="logo">
+      <span class="logo-mark">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+      </span>
+      GiveHope
+    </a>
+    <nav class="nav-links">
+      <a href="#impact">Our Impact</a>
+      <a href="#how">How It Works</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a href="#donate" class="btn btn-primary">
+      Donate now
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="pill">
+        <span class="dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+        Verified 501(c)(3) nonprofit
+      </span>
+      <h1>Small acts.<br><em>Real change.</em></h1>
+      <p class="lede">Your gift goes directly to families who need it most — clean water, warm meals, and emergency shelter. No middlemen, no waste. Just impact you can see.</p>
+
+      <div class="progress-card">
+        <div class="progress-top">
+          <div class="raised"><small>Raised so far</small>$84,320</div>
+          <div class="goal">of <b>$120,000</b> goal<br><b id="daysLeft">23</b> days left</div>
+        </div>
+        <div class="track"><div class="fill" id="fill" data-pct="70"></div></div>
+        <div class="progress-meta">
+          <span><b>70%</b> funded</span>
+          <span><b>2,481</b> generous donors</span>
+        </div>
+      </div>
+
+      <div class="trust">
+        <div class="avatars">
+          <span style="background:#14746f">A</span>
+          <span style="background:#ff7a59">M</span>
+          <span style="background:#f5b942">S</span>
+          <span style="background:#3fb6a8">K</span>
+          <span style="background:#6b7f9e">+</span>
+        </div>
+        <p><b>2,481 people</b> have already given this month</p>
+      </div>
+    </div>
+
+    <div class="donate-card" id="donate">
+      <h2>Make a donation</h2>
+      <p class="sub">100% secure. Cancel monthly gifts anytime.</p>
+
+      <span class="field-label">Frequency</span>
+      <div class="freq" id="freq" data-mode="once">
+        <div class="freq-thumb"></div>
+        <button type="button" class="active" data-freq="once">One-time</button>
+        <button type="button" data-freq="monthly">Monthly<span class="save-badge">2×</span></button>
+      </div>
+
+      <span class="field-label">
+        <span>Choose an amount</span>
+        <button type="button" class="tts-btn" id="ttsAmount" title="Read donation amount aloud">
+          <svg class="ic-play" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+          <svg class="ic-stop" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+          <span>Listen</span>
+        </button>
+      </span>
+      <div class="amounts" id="amounts">
+        <button type="button" class="amt" data-amount="10">$10</button>
+        <button type="button" class="amt active" data-amount="25">$25<small>Popular</small></button>
+        <button type="button" class="amt" data-amount="50">$50</button>
+        <button type="button" class="amt" data-amount="100">$100</button>
+        <button type="button" class="amt" data-amount="250">$250</button>
+        <button type="button" class="amt" data-amount="500">$500</button>
+      </div>
+
+      <div class="custom-wrap">
+        <span class="cur">$</span>
+        <input type="number" id="customAmount" placeholder="Custom amount" min="1" step="1">
+      </div>
+      <div class="err" id="amountErr">Please enter an amount of $1 or more.</div>
+
+      <div class="impact">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#ff7a59" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg>
+        <p id="impactText">Gives a family clean water for a full month.</p>
+        <button type="button" class="tts-btn" id="ttsImpact" title="Read impact aloud">
+          <svg class="ic-play" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+          <svg class="ic-stop" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+        </button>
+      </div>
+
+      <span class="field-label">Your details</span>
+      <div class="row">
+        <div>
+          <input type="text" class="input" id="name" placeholder="Full name" autocomplete="name">
+          <div class="err" id="nameErr">Please enter your name.</div>
+        </div>
+        <div>
+          <input type="email" class="input" id="email" placeholder="Email address" autocomplete="email">
+          <div class="err" id="emailErr">Please enter a valid email.</div>
+        </div>
+      </div>
+
+      <span class="field-label">
+        <span>Message / Remark <span class="opt">(optional)</span></span>
+        <button type="button" class="tts-btn" id="ttsMessage" title="Read amount and message aloud">
+          <svg class="ic-play" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+          <svg class="ic-stop" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+          <span>Read</span>
+        </button>
+      </span>
+      <textarea id="message" class="input" maxlength="300" placeholder="Write a message of support, a dedication, or a note for the families you're helping…"></textarea>
+      <div class="char-count"><span id="msgCount">0</span>/300</div>
+
+      <span class="field-label">
+        <span>YouTube link <span class="opt">(optional — share a video)</span></span>
+      </span>
+      <input type="url" class="input" id="youtube" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off">
+      <div class="err" id="ytErr">Please enter a valid YouTube link (youtube.com or youtu.be).</div>
+      <div class="yt-preview" id="ytPreview"></div>
+
+      <span class="field-label">Payment method</span>
+      <div class="pay-grid" id="payGrid">
+        <button type="button" class="pay active" data-pay="card">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+          Card
+        </button>
+        <button type="button" class="pay" data-pay="paypal">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9a4 4 0 0 1 0 8H9l-1 5H4L6 3z"/><path d="M10 11h6a4 4 0 0 1 0 8h-3l-1 4"/></svg>
+          PayPal
+        </button>
+        <button type="button" class="pay" data-pay="bank">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-6 9 6"/><path d="M5 10v9M19 10v9M9 10v9M15 10v9M3 21h18"/></svg>
+          Bank
+        </button>
+        <button type="button" class="pay" data-pay="apple">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>
+          Apple Pay
+        </button>
+      </div>
+
+      <div class="card-fields show" id="cardFields">
+        <input type="text" class="input" id="cardNum" placeholder="Card number  ••••  ••••  ••••" inputmode="numeric" maxlength="19">
+        <div class="row" style="margin-top:10px">
+          <input type="text" class="input" id="cardExp" placeholder="MM / YY" inputmode="numeric" maxlength="7">
+          <input type="text" class="input" id="cardCvc" placeholder="CVC" inputmode="numeric" maxlength="4">
+        </div>
+      </div>
+
+      <div class="bank-fields" id="bankFields">
+        <div class="bank-card">
+          <div class="bank-head">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-6 9 6"/><path d="M5 10v9M19 10v9M9 10v9M15 10v9M3 21h18"/></svg>
+            Official bank transfer details
+          </div>
+
+          <div class="bank-row">
+            <div class="bank-key">Account name <em>exact as registered</em></div>
+            <div class="bank-val">
+              <b id="bankAccName">GiveHope Foundation</b>
+              <button type="button" class="copy-btn" data-copy="bankAccName">Copy</button>
+            </div>
+          </div>
+
+          <div class="bank-row">
+            <div class="bank-key">Account number</div>
+            <div class="bank-val">
+              <b id="bankAccNum">1234 5678 9012</b>
+              <button type="button" class="copy-btn" data-copy="bankAccNum">Copy</button>
+            </div>
+          </div>
+
+          <div class="bank-row">
+            <div class="bank-key">Bank name</div>
+            <div class="bank-val"><b id="bankName">Global Trust Bank</b></div>
+          </div>
+
+          <div class="bank-row">
+            <div class="bank-key">Routing / ABA</div>
+            <div class="bank-val">
+              <b id="bankRouting">021000021</b>
+              <button type="button" class="copy-btn" data-copy="bankRouting">Copy</button>
+            </div>
+          </div>
+
+          <div class="bank-row">
+            <div class="bank-key">SWIFT / BIC</div>
+            <div class="bank-val">
+              <b id="bankSwift">GTBKUS33</b>
+              <button type="button" class="copy-btn" data-copy="bankSwift">Copy</button>
+            </div>
+          </div>
+
+          <div class="bank-row">
+            <div class="bank-key">Transfer reference</div>
+            <div class="bank-val"><b>Your full name + email</b></div>
+          </div>
+
+          <div class="bank-note">
+            After sending your transfer, click <b>Confirm bank transfer</b> below and we'll email your tax receipt once the funds clear (usually 1–2 business days).
+          </div>
+        </div>
+      </div>
+
+      <button class="submit" id="submitBtn">Donate $25</button>
+
+      <div class="secure">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        Encrypted &amp; secure · Tax-deductible
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="impact" style="padding-top:20px">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Where your money goes</div>
+      <h2>Every dollar has a destination</h2>
+      <p>We publish a full breakdown of our spending every quarter. Here's what your generosity builds.</p>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <div class="ico" style="background:#e8f4f3;color:#14746f"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7S5 9.4 5 14a7 7 0 0 0 14 0c0-4.6-7-11.3-7-11.3z"/></svg></div>
+        <h3>Clean water</h3>
+        <p>Wells, filtration systems, and hygiene training for communities without reliable water access.</p>
+        <span class="tag">42% of funds</span>
+      </div>
+      <div class="card">
+        <div class="ico" style="background:#fff1ec;color:#ff7a59"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18M5 11V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4M4 11v8M20 11v8"/></svg></div>
+        <h3>Warm meals</h3>
+        <p>Community kitchens serving hot, nutritious food to families facing food insecurity.</p>
+        <span class="tag">31% of funds</span>
+      </div>
+      <div class="card">
+        <div class="ico" style="background:#fdf4e0;color:#c98a10"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg></div>
+        <h3>Emergency shelter</h3>
+        <p>Tents, blankets, and safe housing kits deployed within 72 hours of a disaster.</p>
+        <span class="tag">27% of funds</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how" style="padding-top:0">
+  <div class="wrap">
+    <div class="band">
+      <h2>Ready to change a life today?</h2>
+      <p>It takes less than 60 seconds. Your gift reaches the field within 48 hours.</p>
+      <a href="#donate" class="btn">Give now
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section id="faq" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="kicker">Questions</div>
+      <h2>Good to know</h2>
+    </div>
+    <div class="faq-wrap">
+      <details open>
+        <summary>Is my donation tax-deductible?
+          <span class="chev"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+        </summary>
+        <p>Yes. GiveHope is a registered 501(c)(3) organization (EIN 12-3456789). You'll receive a receipt by email immediately, and a consolidated statement every January for your tax filing.</p>
+      </details>
+      <details>
+        <summary>How much of my gift actually reaches the field?
+          <span class="chev"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+        </summary>
+        <p>91 cents of every dollar goes directly to programs. The remaining 9% covers essential operations, audits, and payment processing fees.</p>
+      </details>
+      <details>
+        <summary>Can I cancel a monthly donation?
+          <span class="chev"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+        </summary>
+        <p>Absolutely, anytime. There's a one-click cancel link in every receipt email, or email us at hello@givehope.org and we'll handle it within one business day.</p>
+      </details>
+      <details>
+        <summary>Can I donate by bank transfer?
+          <span class="chev"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+        </summary>
+        <p>Yes — select "Bank" under payment method and our exact account name, number, routing, and SWIFT details will appear.</p>
+      </details>
+      <details>
+        <summary>Can I share a video message?
+          <span class="chev"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+        </summary>
+        <p>Yes. Paste a YouTube link in the donation form and a preview will appear instantly.</p>
+      </details>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div class="logo" style="font-size:1rem">
+      <span class="logo-mark" style="width:30px;height:30px;border-radius:9px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1L12 21l7.7-7.6 1.1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+      </span>
+      GiveHope
+    </div>
+    <p>© 2025 GiveHope Foundation · EIN 12-3456789 · A demo website.</p>
+    <div class="foot-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal">
+    <div class="check">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+    </div>
+    <h3>Thank you, <span id="thankName">friend</span>!</h3>
+    <p>Your gift is on its way to the field. A receipt has been sent to your inbox.</p>
+
+    <div class="receipt">
+      <div><span>Donation type</span><b id="rType">One-time</b></div>
+      <div><span>Payment method</span><b id="rMethod">Card</b></div>
+      <div id="rBankRow" style="display:none"><span>To account</span><b id="rBankName"></b></div>
+      <div id="rMessageRow" style="display:none"><span>Message</span><b id="rMessage"></b></div>
+      <div id="rYoutubeRow" style="display:none"><span>Video</span><b><a id="rYoutube" href="#" target="_blank" rel="noopener">Watch</a></b></div>
+      <div><span>Reference</span><b id="rRef">GH-000000</b></div>
+      <div class="total"><span>Total</span><b id="rTotal">$25.00</b></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="readReceipt">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+        Read
+      </button>
+      <button class="btn btn-primary" id="closeModal">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* EDIT YOUR BANK DETAILS HERE */
+  const BANK_DETAILS = {
+    bankAccName: 'GiveHope Foundation',
+    bankAccNum:  '1234 5678 9012',
+    bankName:    'Global Trust Bank',
+    bankRouting: '021000021',
+    bankSwift:   'GTBKUS33'
+  };
+
+  const nav = document.getElementById('nav');
+  addEventListener('scroll', () => { nav.classList.toggle('scrolled', scrollY > 8); }, { passive: true });
+
+  const fill = document.getElementById('fill');
+  setTimeout(() => { fill.style.width = fill.dataset.pct + '%'; }, 300);
+
+  const TTS = {
+    synth: ('speechSynthesis' in window) ? window.speechSynthesis : null,
+    activeBtn: null,
+    supported() { return !!this.synth; },
+    speak(text, btn, lang) {
+      if (!this.supported()) { alert('Text-to-speech is not supported in this browser.'); return; }
+      if (this.activeBtn === btn) { this.stop(); return; }
+      this.stop();
+      const isKhmer = /[\u1780-\u17FF]/.test(text);
+      const targetLang = lang || (isKhmer ? 'km-KH' : 'en-US');
+      const u = new SpeechSynthesisUtterance(text);
+      u.rate = targetLang === 'km-KH' ? 0.75 : 0.85; // បន្ថយល្បឿនឲ្យនិយាយមួយៗ
+      u.pitch = 1;
+      u.lang = targetLang;
+      u.onend = () => { this.activeBtn = null; btn && btn.classList.remove('speaking'); };
+      u.onerror = () => { this.activeBtn = null; btn && btn.classList.remove('speaking'); };
+      this.activeBtn = btn || null;
+      btn && btn.classList.add('speaking');
+      this.synth.speak(u);
+    },
+    stop() {
+      if (this.synth) this.synth.cancel();
+      document.querySelectorAll('.tts-btn.speaking').forEach(b => b.classList.remove('speaking'));
+      this.activeBtn = null;
+    }
+  };
+
+  let naturalKhmerAudio = null;
+
+  function stopAllVoice() {
+    if (naturalKhmerAudio) {
+      naturalKhmerAudio.pause();
+      naturalKhmerAudio = null;
+    }
+    TTS.stop();
+  }
+
+  function playNaturalKhmerVoice(text, btn) {
+    stopAllVoice();
+    const audioUrl = 'https://translate.google.com/translate_tts?ie=UTF-8&q=' + encodeURIComponent(text.trim()) + '&tl=km&client=tw-ob';
+    naturalKhmerAudio = new Audio(audioUrl);
+    btn && btn.classList.add('speaking');
+
+    naturalKhmerAudio.onended = () => {
+      naturalKhmerAudio = null;
+      btn && btn.classList.remove('speaking');
+    };
+    naturalKhmerAudio.onerror = () => {
+      naturalKhmerAudio = null;
+      TTS.speak(text, btn, 'km-KH');
+    };
+    naturalKhmerAudio.play().catch(() => {
+      TTS.speak(text, btn, 'km-KH');
+    });
+  }
+
+  function toKhmerNumber(num) {
+    const khmerDigits = ['០', '១', '២', '៣', '៤', '៥', '៦', '៧', '៨', '៩'];
+    return String(num).replace(/[0-9]/g, d => khmerDigits[parseInt(d, 10)]);
+  }
+
+  // 1. អរគុណ [ឈ្មោះ]
+  // 2. សម្រាប់ទឹកប្រាក់ [ចំនួន] ដុល្លា (ប្រើ 'ដុល្លា' មិនប្រើ 'ដុល្លារ' ដើម្បីកុំឲ្យ Voice Engine បន្ថែមពាក្យ 'អាមេរិក')
+  // 3. អាន Message ដោយផ្ទាល់
+  function announceDonation(donorName, donorAmount, donorMsg, btn) {
+    const amountKhmer = toKhmerNumber(donorAmount);
+    let speechText = 'អរគុណ ' + donorName + ', សម្រាប់ទឹកប្រាក់ ' + amountKhmer + ' ដុល្លា';
+    if (donorMsg && donorMsg.trim()) {
+      speechText += ', ' + donorMsg.trim();
+    }
+    playNaturalKhmerVoice(speechText, btn);
+  }
+  addEventListener('beforeunload', () => TTS.stop());
+
+  const state = { frequency: 'once', amount: 25, method: 'card' };
+
+  const freqBox     = document.getElementById('freq');
+  const freqBtns    = freqBox.querySelectorAll('button');
+  const amtBtns     = document.querySelectorAll('.amt');
+  const customInput = document.getElementById('customAmount');
+  const amountErr   = document.getElementById('amountErr');
+  const impactText  = document.getElementById('impactText');
+  const payGrid     = document.getElementById('payGrid');
+  const payBtns     = payGrid.querySelectorAll('.pay');
+  const cardFields  = document.getElementById('cardFields');
+  const bankFields  = document.getElementById('bankFields');
+  const submitBtn   = document.getElementById('submitBtn');
+  const nameInput   = document.getElementById('name');
+  const emailInput  = document.getElementById('email');
+  const nameErr     = document.getElementById('nameErr');
+  const emailErr    = document.getElementById('emailErr');
+  const messageInput= document.getElementById('message');
+  const msgCount    = document.getElementById('msgCount');
+  const ytInput     = document.getElementById('youtube');
+  const ytErr       = document.getElementById('ytErr');
+  const ytPreview   = document.getElementById('ytPreview');
+  const overlay     = document.getElementById('overlay');
+  const modal       = document.getElementById('modal');
+
+  Object.keys(BANK_DETAILS).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = BANK_DETAILS[id];
+  });
+
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const target = document.getElementById(btn.dataset.copy);
+      if (!target) return;
+      const text = target.textContent.trim();
+      try { await navigator.clipboard.writeText(text); }
+      catch {
+        const ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta);
+        ta.select(); document.execCommand('copy'); ta.remove();
+      }
+      const original = btn.textContent;
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 1400);
+    });
+  });
+
+  const impactMap = [
+    { min: 1,   text: 'Every gift counts — thank you for your kindness.' },
+    { min: 10,  text: 'Provides school supplies for 2 children.' },
+    { min: 25,  text: 'Gives a family clean water for a full month.' },
+    { min: 50,  text: 'Serves 15 warm meals at our community kitchen.' },
+    { min: 100, text: 'Sends an emergency shelter kit to a displaced family.' },
+    { min: 250, text: 'Funds medical care for 5 patients in rural clinics.' },
+    { min: 500, text: 'Sponsors a clean-water well for an entire village.' }
+  ];
+
+  function updateImpact() {
+    const amt = state.amount;
+    let msg = impactMap[0].text;
+    for (const entry of impactMap) { if (amt >= entry.min) msg = entry.text; }
+    const prefix = state.frequency === 'monthly' ? 'Every month: ' : '';
+    impactText.textContent = prefix + msg.charAt(0).toLowerCase() + msg.slice(1);
+  }
+
+  const money = n => '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const moneyShort = n => '$' + Number(n).toLocaleString('en-US');
+
+  function spokenAmount(amt) { return Number(amt).toLocaleString('en-US') + ' dollars'; }
+
+  function buildAmountSpeech() {
+    if (!state.amount || state.amount < 1) return 'Please choose or type a donation amount first.';
+    const cadence = state.frequency === 'monthly' ? ' every month' : ' as a one-time gift';
+    return 'You are donating ' + spokenAmount(state.amount) + cadence + '.';
+  }
+
+  function buildAmountAndMessageSpeech() {
+    const parts = [];
+    if (!state.amount || state.amount < 1) parts.push('You have not chosen a donation amount yet.');
+    else {
+      const cadence = state.frequency === 'monthly' ? ' every month' : ' as a one-time gift';
+      parts.push('You are donating ' + spokenAmount(state.amount) + cadence + '.');
+    }
+    const msg = messageInput.value.trim();
+    if (msg) parts.push('Your message says: ' + msg);
+    else parts.push('You have not written a message yet.');
+    return parts.join(' ');
+  }
+
+  function updateButton() {
+    const amt = moneyShort(state.amount || 0);
+    if (state.method === 'bank') {
+      submitBtn.textContent = state.frequency === 'monthly' ? 'Set up monthly transfer · ' + amt : 'Confirm bank transfer · ' + amt;
+    } else {
+      submitBtn.textContent = 'Donate ' + amt + (state.frequency === 'monthly' ? ' / month' : '');
+    }
+  }
+
+  freqBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      freqBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.frequency = btn.dataset.freq;
+      freqBox.dataset.mode = state.frequency;
+      updateImpact(); updateButton();
+    });
+  });
+
+  amtBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      amtBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      customInput.value = '';
+      customInput.classList.remove('invalid');
+      amountErr.classList.remove('show');
+      state.amount = Number(btn.dataset.amount);
+      updateImpact(); updateButton();
+    });
+  });
+
+  customInput.addEventListener('input', () => {
+    const val = parseFloat(customInput.value);
+    if (customInput.value === '') { amtBtns.forEach(b => b.classList.remove('active')); state.amount = 0; }
+    else if (!isNaN(val) && val > 0) { amtBtns.forEach(b => b.classList.remove('active')); state.amount = val; customInput.classList.remove('invalid'); amountErr.classList.remove('show'); }
+    else { state.amount = 0; }
+    updateImpact(); updateButton();
+  });
+
+  messageInput.addEventListener('input', () => { msgCount.textContent = messageInput.value.length; });
+
+  document.getElementById('ttsAmount').addEventListener('click', function () { TTS.speak(buildAmountSpeech(), this); });
+  document.getElementById('ttsImpact').addEventListener('click', function () { TTS.speak(impactText.textContent, this); });
+  document.getElementById('ttsMessage').addEventListener('click', function () { TTS.speak(buildAmountAndMessageSpeech(), this); });
+
+  function getYouTubeId(url) {
+    if (!url) return null;
+    const m = url.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+    return m ? m[1] : null;
+  }
+
+  function renderYouTubePreview() {
+    const val = ytInput.value.trim();
+    const id  = getYouTubeId(val);
+    if (!val) { ytPreview.classList.remove('show'); ytPreview.innerHTML = ''; ytErr.classList.remove('show'); ytInput.classList.remove('invalid'); return; }
+    if (!id) { ytErr.classList.add('show'); ytInput.classList.add('invalid'); ytPreview.classList.remove('show'); ytPreview.innerHTML = ''; return; }
+    ytErr.classList.remove('show'); ytInput.classList.remove('invalid');
+    if (ytPreview.dataset.vid !== id) {
+      ytPreview.dataset.vid = id;
+      ytPreview.innerHTML = '<iframe src="https://www.youtube.com/embed/' + id + '" title="Donor video message" loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+    }
+    ytPreview.classList.add('show');
+  }
+
+  ytInput.addEventListener('input', renderYouTubePreview);
+  ytInput.addEventListener('blur', renderYouTubePreview);
+
+  payBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      payBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.method = btn.dataset.pay;
+      cardFields.classList.toggle('show', state.method === 'card');
+      bankFields.classList.toggle('show', state.method === 'bank');
+      updateButton();
+    });
+  });
+
+  const cardNum = document.getElementById('cardNum');
+  const cardExp = document.getElementById('cardExp');
+  const cardCvc = document.getElementById('cardCvc');
+  cardNum.addEventListener('input', e => { let v = e.target.value.replace(/\D/g, '').slice(0, 16); e.target.value = v.replace(/(.{4})/g, '$1 ').trim(); });
+  cardExp.addEventListener('input', e => { let v = e.target.value.replace(/\D/g, '').slice(0, 4); e.target.value = v.length > 2 ? v.slice(0, 2) + ' / ' + v.slice(2) : v; });
+  cardCvc.addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4); });
+
+  function validate() {
+    let ok = true;
+    if (!state.amount || state.amount < 1) { amountErr.classList.add('show'); customInput.classList.add('invalid'); ok = false; }
+    else { amountErr.classList.remove('show'); customInput.classList.remove('invalid'); }
+    if (nameInput.value.trim().length < 2) { nameErr.classList.add('show'); nameInput.classList.add('invalid'); ok = false; }
+    else { nameErr.classList.remove('show'); nameInput.classList.remove('invalid'); }
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailInput.value.trim());
+    if (!emailOk) { emailErr.classList.add('show'); emailInput.classList.add('invalid'); ok = false; }
+    else { emailErr.classList.remove('show'); emailInput.classList.remove('invalid'); }
+    const ytVal = ytInput.value.trim();
+    if (ytVal && !getYouTubeId(ytVal)) { ytErr.classList.add('show'); ytInput.classList.add('invalid'); ok = false; }
+    else { ytErr.classList.remove('show'); ytInput.classList.remove('invalid'); }
+    return ok;
+  }
+
+  [nameInput, emailInput, customInput].forEach(el => {
+    el.addEventListener('input', () => {
+      el.classList.remove('invalid');
+      el.parentElement.querySelector('.err')?.classList.remove('show');
+    });
+  });
+
+  function confetti() {
+    const colors = ['#14746f', '#ff7a59', '#f5b942', '#3fb6a8', '#0f5f5b', '#ffd9a0'];
+    for (let i = 0; i < 70; i++) {
+      const el = document.createElement('i');
+      el.className = 'confetti';
+      el.style.left = Math.random() * 100 + '%';
+      el.style.background = colors[(Math.random() * colors.length) | 0];
+      el.style.width = (5 + Math.random() * 7) + 'px';
+      el.style.height = (8 + Math.random() * 8) + 'px';
+      el.style.animationDelay = (Math.random() * 0.5) + 's';
+      el.style.animationDuration = (1.5 + Math.random() * 1.3) + 's';
+      el.style.opacity = 0.9;
+      modal.appendChild(el);
+      setTimeout(() => el.remove(), 3400);
+    }
+  }
+
+  submitBtn.addEventListener('click', () => {
+    if (!validate()) { document.querySelector('.input.invalid')?.focus(); return; }
+    TTS.stop();
+    submitBtn.disabled = true;
+    submitBtn.textContent = state.method === 'bank' ? 'Confirming…' : 'Processing…';
+
+    setTimeout(() => {
+      const methodNames = { card: 'Credit / Debit Card', paypal: 'PayPal', bank: 'Bank Transfer', apple: 'Apple Pay' };
+      const firstName = nameInput.value.trim().split(' ')[0];
+      const msg = messageInput.value.trim();
+      const ytVal = ytInput.value.trim();
+      const ytId = getYouTubeId(ytVal);
+
+      document.getElementById('thankName').textContent = firstName;
+      document.getElementById('rType').textContent = state.frequency === 'monthly' ? 'Monthly (recurring)' : 'One-time';
+      document.getElementById('rMethod').textContent = methodNames[state.method];
+
+      const bankRow = document.getElementById('rBankRow');
+      if (state.method === 'bank') { bankRow.style.display = 'flex'; document.getElementById('rBankName').textContent = BANK_DETAILS.bankAccName; }
+      else { bankRow.style.display = 'none'; }
+
+      const msgRow = document.getElementById('rMessageRow');
+      if (msg) { msgRow.style.display = 'flex'; document.getElementById('rMessage').textContent = msg.length > 80 ? msg.slice(0, 77) + '…' : msg; }
+      else { msgRow.style.display = 'none'; }
+
+      const ytRow = document.getElementById('rYoutubeRow');
+      if (ytId) { ytRow.style.display = 'flex'; const link = document.getElementById('rYoutube'); link.href = 'https://www.youtube.com/watch?v=' + ytId; link.textContent = 'youtu.be/' + ytId; }
+      else { ytRow.style.display = 'none'; }
+
+      document.getElementById('rRef').textContent = 'GH-' + Math.random().toString(36).slice(2, 8).toUpperCase();
+      document.getElementById('rTotal').textContent = money(state.amount) + (state.frequency === 'monthly' ? ' / month' : '');
+
+      overlay.classList.add('show');
+      document.body.style.overflow = 'hidden';
+      confetti();
+
+      // Automatically announce: 1. Name -> 2. Amount -> 3. Message
+      announceDonation(
+        nameInput.value.trim() || 'សប្បុរសជន',
+        state.amount,
+        messageInput.value.trim(),
+        document.getElementById('readReceipt')
+      );
+
+      submitBtn.disabled = false;
+      updateButton();
+    }, 900);
+  });
+
+  document.getElementById('readReceipt').addEventListener('click', function () {
+    // 1. Name -> 2. Amount -> 3. Message
+    announceDonation(
+      nameInput.value.trim() || document.getElementById('thankName').textContent,
+      state.amount,
+      messageInput.value.trim(),
+      this
+    );
+  });
+
+  function closeModal() {
+    stopAllVoice();
+    overlay.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('closeModal').addEventListener('click', closeModal);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+  addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  updateImpact();
+  updateButton();
+})();
+</script>
+</body>
+</html>
