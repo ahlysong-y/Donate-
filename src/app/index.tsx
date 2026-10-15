@@ -724,35 +724,6 @@ export default function DonationScreen() {
 
           </View>
 
-          {/* QUICK CHEER CHIPS */}
-          <View style={styles.quickCheerSection}>
-            <View style={styles.quickCheerHeader}>
-              <Ionicons name="flash" size={13} color="#ff7a59" />
-              <Text style={styles.quickCheerHeading}>1-Tap Fast Cheers</Text>
-            </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.quickCheerList}
-            >
-              {QUICK_CHEERS.map((chip, idx) => {
-                const isSelected = message.includes(chip);
-                return (
-                  <TouchableOpacity
-                    key={idx}
-                    style={[styles.quickChip, isSelected && styles.quickChipActive]}
-                    activeOpacity={0.7}
-                    onPress={() => handleSelectQuickCheer(chip)}
-                  >
-                    <Text style={[styles.quickChipText, isSelected && styles.quickChipTextActive]}>
-                      {chip}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </ScrollView>
-          </View>
-
           {/* MESSAGE / REMARK */}
           <View style={styles.fieldHeaderRow}>
             <Text style={styles.fieldLabel}>
