@@ -905,7 +905,7 @@ export default function DonationScreen() {
                   ? 'កំពុងផ្ទៀងផ្ទាត់ការទូទាត់…'
                   : isSubmitting
                     ? 'កំពុងបាញ់ Alert លើ Live…'
-                    : 'ស្កេនរួចហើយ (ឬរង់ចាំ Auto)'}
+                    : 'ស្កេនរួចហើយ'}
               </Text>
             </View>
           </TouchableOpacity>
